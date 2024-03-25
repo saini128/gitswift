@@ -15,13 +15,14 @@ func commitChanges() error {
 	message, _ := reader.ReadString('\n')
 
 	cmdAdd := exec.Command("git", "add", ".")
-	if err := cmdAdd.Run(); err != nil {
-		return fmt.Errorf("error adding files to commit: %v", err)
+	if output, err := cmdAdd.CombinedOutput(); err != nil {
+
+		return fmt.Errorf("error adding files to commit: %s", string(output))
 	}
 
 	cmdCommit := exec.Command("git", "commit", "-m", message)
-	if err := cmdCommit.Run(); err != nil {
-		return fmt.Errorf("error committing changes: %v", err)
+	if output, err := cmdCommit.CombinedOutput(); err != nil {
+		return fmt.Errorf("error committing changes: %s", string(output))
 	}
 
 	return nil
@@ -38,7 +39,7 @@ func getRemoteURL() error {
 		if strings.Contains(string(output), "No such remote") {
 			return addRemoteURL()
 		}
-		return fmt.Errorf("error getting remote URL: %v", err)
+		return fmt.Errorf("error getting remote URL: %s", string(output))
 	}
 	return nil
 }
