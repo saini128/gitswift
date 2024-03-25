@@ -63,7 +63,6 @@ func pushChanges() error {
 	if err := getRemoteURL(); err != nil {
 		return err
 	}
-	fmt.Println("ethe tk koi error ni")
 	cmdPush := exec.Command("git", "push", "-u", "origin", "main")
 	output, err := cmdPush.CombinedOutput()
 	if err != nil {
