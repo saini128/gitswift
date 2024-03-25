@@ -8,14 +8,42 @@ import (
 	"strings"
 )
 
+func initGit() error {
+	cmdGitInit := exec.Command("git", "init")
+	output, err := cmdGitInit.CombinedOutput()
+
+	if err != nil {
+		return fmt.Errorf("Error inititalising repository %s", string(output))
+
+	}
+	fmt.Print(string(output))
+
+	cmdMain := exec.Command("git", "branch", "-M", "main")
+	output2, err := cmdMain.CombinedOutput()
+
+	if err != nil {
+		return fmt.Errorf("Error inititalising repository %s", string(output2))
+
+	}
+	fmt.Print(string(output2))
+
+	return nil
+
+}
+
 // Function to execute git add and git commit
 func commitChanges() error {
+
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Enter commit message: ")
 	message, _ := reader.ReadString('\n')
 
 	cmdAdd := exec.Command("git", "add", ".")
 	if output, err := cmdAdd.CombinedOutput(); err != nil {
+
+		if strings.Contains(string(output), "not a git repository") {
+			return initGit()
+		}
 
 		return fmt.Errorf("error adding files to commit: %s", string(output))
 	}
@@ -54,7 +82,7 @@ func addRemoteURL() error {
 	cmdRemote := exec.Command("git", "remote", "add", "origin", url)
 	output, err := cmdRemote.CombinedOutput()
 	if err != nil {
-		return fmt.Errorf("error adding remote URL: %v, %s", err, output)
+		return fmt.Errorf("error adding remote URL:%s", string(output))
 	}
 	return nil
 }
@@ -67,7 +95,7 @@ func pushChanges() error {
 	cmdPush := exec.Command("git", "push", "-u", "origin", "main")
 	output, err := cmdPush.CombinedOutput()
 	if err != nil {
-		return fmt.Errorf("error pushing changes: %v, %s", err, output)
+		return fmt.Errorf("error pushing changes: %s", string(output))
 	}
 
 	fmt.Println("Push successful:", string(output))
@@ -76,7 +104,7 @@ func pushChanges() error {
 
 // Main function to handle arguments and execute appropriate commands
 func main() {
-	if len(os.Args) < 2 {
+	if len(os.Args) != 2 {
 		fmt.Println("Usage: gitswift [push | commit]")
 		os.Exit(1)
 	}
