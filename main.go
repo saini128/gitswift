@@ -33,7 +33,7 @@ func getRemoteURL() error {
 	output, err := cmdRemote.CombinedOutput()
 	if err != nil {
 		// Print the error message
-		fmt.Println("Error (stderr):", string(output))
+		fmt.Print(string(output))
 		// If remote doesn't exist, prompt for the URL and add it
 		if strings.Contains(string(output), "No such remote") {
 			return addRemoteURL()
