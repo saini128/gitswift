@@ -1,0 +1,6 @@
+Package: gitswift
+Version: 1.0
+Architecture: amd64
+Maintainer: Hushraj Singh <contact@singhropar.tech>
+Description: A tool for simplified Git operations.
+ This package provides a Go application to automate common Git commands.
